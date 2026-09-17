@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人主页 · 机器智能化方向</title>
+<meta name="description" content="计算机专业个人展示页面 —— 机器智能化方向：机器视觉、工业数据分析、智能优化算法。">
+
+<!--
+  ============================================================
+  使用说明（看完可删除本注释）
+  1. 需要替换的个人信息和项目，全部集中在页面底部脚本区域的
+     SITE / SKILLS / PROJECTS / TIMELINE 四个变量中，
+     搜索「TODO」即可定位。
+  2. 姓名等少量文案写在 HTML 里，搜索「TODO」同样能找到。
+  3. 这是单文件页面，双击即可打开，也可直接上传到任意静态托管。
+  ============================================================
+-->
+
+<style>
+/* ============ 设计变量 ============ */
+:root{
+  --bg:#f6f8fc;
+  --bg-soft:#eef2f9;
+  --surface:#ffffff;
+  --surface-2:#f2f5fb;
+  --border:#e3e9f4;
+  --text:#0f1a2e;
+  --text-2:#4a5a75;
+  --text-3:#7a8aa3;
+  --primary:#2f6bff;
+  --primary-2:#7c4dff;
+  --accent:#00b8d4;
+  --grad:linear-gradient(120deg,#2f6bff 0%,#7c4dff 55%,#00b8d4 100%);
+  --shadow-sm:0 2px 10px rgba(18,38,74,.06);
+  --shadow:0 10px 30px rgba(18,38,74,.09);
+  --shadow-lg:0 24px 60px rgba(18,38,74,.14);
+  --radius:16px;
+  --nav-h:64px;
+}
+[data-theme="dark"]{
+  --bg:#0b1020;
+  --bg-soft:#111a30;
+  --surface:#141d33;
+  --surface-2:#1a2440;
+  --border:#253152;
+  --text:#eaf0fb;
+  --text-2:#a9b6cc;
+  --text-3:#7e8ca6;
+  --shadow-sm:0 2px 10px rgba(0,0,0,.3);
+  --shadow:0 10px 30px rgba(0,0,0,.4);
+  --shadow-lg:0 24px 60px rgba(0,0,0,.5);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:"PingFang SC","Microsoft YaHei","Helvetica Neue",Inter,system-ui,-apple-system,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  transition:background .35s ease,color .35s ease;
+}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+img,svg{display:block;max-width:100%}
+::selection{background:var(--primary);color:#fff}
+
+.container{width:100%;max-width:1160px;margin:0 auto;padding:0 24px}
+
+/* ============ 顶部进度条 ============ */
+#progress{
+  position:fixed;top:0;left:0;height:3px;width:0%;
+  background:var(--grad);z-index:200;transition:width .1s linear;
+}
+
+/* ============ 导航 ============ */
+.nav{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:100;
+  display:flex;align-items:center;
+  background:var(--surface);
+  background:color-mix(in srgb,var(--surface) 80%,transparent);
+  backdrop-filter:saturate(180%) blur(14px);
+  -webkit-backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid transparent;
+  transition:border-color .3s,box-shadow .3s;
+}
+.nav.scrolled{border-bottom-color:var(--border);box-shadow:var(--shadow-sm)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;width:100%}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.5px}
+.brand-mark{
+  width:32px;height:32px;border-radius:10px;background:var(--grad);
+  display:grid;place-items:center;color:#fff;font-size:14px;font-weight:800;
+}
+.nav-links{display:flex;align-items:center;gap:6px}
+.nav-links a{
+  padding:8px 14px;border-radius:10px;font-size:14.5px;color:var(--text-2);
+  transition:background .2s,color .2s;
+}
+.nav-links a:hover{background:var(--surface-2);color:var(--text)}
+.nav-actions{display:flex;align-items:center;gap:8px}
+.icon-btn{
+  width:38px;height:38px;border-radius:11px;border:1px solid var(--border);
+  background:var(--surface);color:var(--text-2);cursor:pointer;
+  display:grid;place-items:center;transition:.2s;
+}
+.icon-btn:hover{color:var(--primary);border-color:var(--primary);transform:translateY(-1px)}
+#menuToggle{display:none}
+
+/* ============ Hero ============ */
+.hero{position:relative;padding:calc(var(--nav-h) + 72px) 0 80px;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;pointer-events:none}
+.orb-1{width:420px;height:420px;background:#7c4dff;top:-120px;right:-60px}
+.orb-2{width:380px;height:380px;background:#00b8d4;bottom:-140px;left:-80px;opacity:.35}
+.orb-3{width:300px;height:300px;background:#2f6bff;top:180px;left:42%;opacity:.22}
+.grid-bg{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(var(--border) 1px,transparent 1px),
+                   linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,#000 20%,transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,#000 20%,transparent 75%);
+  opacity:.7;
+}
+.hero-inner{position:relative;display:grid;grid-template-columns:1fr;gap:0;align-items:center}
+.hero-inner > div:first-child{max-width:720px}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:7px 14px;border-radius:999px;font-size:13px;
+  background:var(--surface);border:1px solid var(--border);color:var(--text-2);
+  box-shadow:var(--shadow-sm);
+}
+.badge .dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.18)}
+.hero h1{font-size:clamp(34px,5vw,54px);line-height:1.2;margin:22px 0 6px;letter-spacing:-.5px}
+.hero h1 .grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.type-line{font-size:clamp(18px,2.4vw,24px);font-weight:600;color:var(--primary);min-height:1.6em;margin-bottom:16px}
+.type-line .caret{display:inline-block;width:2px;height:1.05em;background:var(--primary);vertical-align:-3px;margin-left:3px;animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+.hero p.lead{color:var(--text-2);font-size:16.5px;max-width:560px}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:12px;
+  font-size:15px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:.22s;
+}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 10px 24px rgba(47,107,255,.28)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(47,107,255,.36)}
+.btn-ghost{background:var(--surface);color:var(--text);border-color:var(--border)}
+.btn-ghost:hover{border-color:var(--primary);color:var(--primary);transform:translateY(-2px)}
+.hero-stats{display:flex;gap:32px;margin-top:38px;flex-wrap:wrap}
+.hero-stats .num{font-size:26px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-stats .lbl{font-size:13px;color:var(--text-3)}
+
+/* ============ 通用区块 ============ */
+section{padding:88px 0}
+.sec-head{margin-bottom:44px;max-width:640px}
+.sec-tag{
+  display:inline-block;font-size:12.5px;font-weight:700;letter-spacing:1.6px;
+  color:var(--primary);text-transform:uppercase;margin-bottom:10px;
+}
+.sec-head h2{font-size:clamp(26px,3.4vw,36px);letter-spacing:-.4px;margin-bottom:12px}
+.sec-head p{color:var(--text-2)}
+
+/* ============ 关于 / 技能 ============ */
+.about{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.about p{color:var(--text-2);margin-bottom:16px}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:26px}
+.info-item{
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;
+}
+.info-item .k2{font-size:12px;color:var(--text-3);display:block;margin-bottom:2px}
+.info-item .v2{font-size:14.5px;font-weight:600}
+.skill-list{display:flex;flex-direction:column;gap:20px}
+.skill-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.skill-top .name{font-weight:600;font-size:15px}
+.skill-top .val{font-size:13px;color:var(--text-3);font-variant-numeric:tabular-nums}
+.bar{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.bar > i{
+  display:block;height:100%;width:0;border-radius:99px;background:var(--grad);
+  transition:width 1.2s cubic-bezier(.22,1,.36,1);
+}
+.tag-cloud{display:flex;flex-wrap:wrap;gap:9px;margin-top:28px}
+.tag{
+  padding:6px 13px;border-radius:9px;font-size:13px;
+  background:var(--surface);border:1px solid var(--border);color:var(--text-2);transition:.2s;
+}
+.tag:hover{border-color:var(--primary);color:var(--primary);transform:translateY(-2px)}
+
+/* ============ 项目 ============ */
+.filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:32px}
+.filter{
+  padding:8px 18px;border-radius:999px;font-size:14px;cursor:pointer;
+  background:var(--surface);border:1px solid var(--border);color:var(--text-2);transition:.22s;
+}
+.filter:hover{color:var(--text);border-color:var(--primary)}
+.filter.active{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 8px 20px rgba(47,107,255,.26)}
+.projects{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:24px}
+.card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;cursor:pointer;transition:.28s cubic-bezier(.22,1,.36,1);
+  display:flex;flex-direction:column;
+}
+.card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--primary) 35%,var(--border))}
+.cat-inline{
+  display:inline-block;align-self:flex-start;margin-bottom:10px;
+  padding:4px 11px;border-radius:99px;font-size:12px;font-weight:600;
+  background:var(--surface-2);color:var(--primary);border:1px solid var(--border);
+}
+.card-body{padding:20px;display:flex;flex-direction:column;flex:1}
+.card-body h3{font-size:18px;margin-bottom:8px;line-height:1.45}
+.card-body p{font-size:14.3px;color:var(--text-2);flex:1}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 0}
+.chip{
+  font-size:12px;padding:4px 10px;border-radius:7px;
+  background:var(--surface-2);color:var(--text-2);border:1px solid var(--border);
+}
+.card-foot{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:16px;padding-top:14px;border-top:1px solid var(--border);
+  font-size:13px;color:var(--text-3);
+}
+.card-foot .more{color:var(--primary);font-weight:600;display:flex;align-items:center;gap:4px}
+.card:hover .more svg{transform:translateX(3px)}
+.card-foot .more svg{transition:transform .22s}
+
+/* ============ 弹窗 ============ */
+.modal{
+  position:fixed;inset:0;z-index:300;display:none;
+  align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;
+}
+.modal.open{display:flex;animation:fadeIn .22s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-mask{position:fixed;inset:0;background:rgba(10,18,35,.55);backdrop-filter:blur(4px)}
+.modal-box{
+  position:relative;width:100%;max-width:760px;background:var(--surface);
+  border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow-lg);
+  overflow:hidden;animation:pop .28s cubic-bezier(.22,1,.36,1);margin:auto;
+}
+@keyframes pop{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:none}}
+.modal-close{
+  position:absolute;top:16px;right:16px;z-index:3;width:36px;height:36px;border-radius:50%;
+  border:1px solid var(--border);cursor:pointer;background:var(--surface-2);color:var(--text-2);
+  display:grid;place-items:center;font-size:20px;line-height:1;transition:.2s;
+}
+.modal-close:hover{background:var(--surface);color:var(--primary);border-color:var(--primary);transform:rotate(90deg)}
+.modal-icon svg{width:46px;height:46px;color:var(--primary);margin-bottom:14px}
+.modal-inner{padding:28px}
+.modal-inner h3{font-size:23px;margin-bottom:6px}
+.modal-meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 20px}
+.modal-meta span{font-size:12.5px;padding:5px 12px;border-radius:8px;background:var(--surface-2);color:var(--text-2);border:1px solid var(--border)}
+.modal-sec{margin-top:22px}
+.modal-sec h4{font-size:14px;letter-spacing:.5px;color:var(--primary);margin-bottom:10px;text-transform:uppercase}
+.modal-sec ul li{position:relative;padding-left:20px;margin-bottom:9px;color:var(--text-2);font-size:14.6px}
+.modal-sec ul li::before{
+  content:"";position:absolute;left:2px;top:.72em;width:7px;height:7px;border-radius:50%;background:var(--grad);
+}
+.results{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:10px}
+.result{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.result b{display:block;font-size:21px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.result span{font-size:12.5px;color:var(--text-3)}
+
+/* ============ 时间线 ============ */
+.timeline{position:relative;padding-left:34px}
+.timeline::before{content:"";position:absolute;left:9px;top:8px;bottom:8px;width:2px;background:var(--border)}
+.tl-item{position:relative;padding-bottom:32px}
+.tl-item:last-child{padding-bottom:0}
+.tl-item::before{
+  content:"";position:absolute;left:-34px;top:6px;width:20px;height:20px;border-radius:50%;
+  background:var(--surface);border:3px solid var(--primary);
+}
+.tl-item.now::before{border-color:var(--accent);box-shadow:0 0 0 5px rgba(0,184,212,.16)}
+.tl-date{font-size:12.5px;font-weight:700;color:var(--primary);letter-spacing:.6px}
+.tl-item h4{font-size:17px;margin:3px 0 6px}
+.tl-item p{font-size:14.4px;color:var(--text-2)}
+
+/* ============ 联系 ============ */
+.contact{
+  background:var(--surface);border:1px solid var(--border);border-radius:22px;
+  padding:52px;text-align:center;box-shadow:var(--shadow);
+}
+.contact h2{font-size:clamp(24px,3vw,32px);margin-bottom:12px}
+.contact > p{color:var(--text-2);max-width:520px;margin:0 auto 32px}
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;max-width:760px;margin:0 auto}
+.contact-item{
+  background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:18px;
+  transition:.22s;
+}
+.contact-item:hover{transform:translateY(-3px);border-color:var(--primary);box-shadow:var(--shadow-sm)}
+.contact-item .ic{
+  width:40px;height:40px;border-radius:12px;margin:0 auto 10px;display:grid;place-items:center;
+  background:var(--grad);color:#fff;
+}
+.contact-item .k2{font-size:12px;color:var(--text-3);display:block}
+.contact-item .v2{font-size:14.5px;font-weight:600;word-break:break-all}
+
+footer{padding:34px 0 44px;text-align:center;color:var(--text-3);font-size:13.5px;border-top:1px solid var(--border);margin-top:40px}
+
+/* ============ 回到顶部 ============ */
+#toTop{
+  position:fixed;right:24px;bottom:24px;z-index:90;width:44px;height:44px;border-radius:50%;
+  border:1px solid var(--border);background:var(--surface);color:var(--text-2);cursor:pointer;
+  display:grid;place-items:center;box-shadow:var(--shadow);
+  opacity:0;pointer-events:none;transition:.28s;
+}
+#toTop.show{opacity:1;pointer-events:auto}
+#toTop:hover{color:var(--primary);border-color:var(--primary);transform:translateY(-3px)}
+
+/* ============ 滚动出现动画 ============ */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* ============ 响应式 ============ */
+@media (max-width:960px){
+  .hero-inner{grid-template-columns:1fr;gap:40px}
+  .about{grid-template-columns:1fr;gap:40px}
+  section{padding:70px 0}
+}
+@media (max-width:720px){
+  .nav-links{
+    position:fixed;top:var(--nav-h);left:0;right:0;flex-direction:column;align-items:stretch;
+    background:var(--surface);border-bottom:1px solid var(--border);padding:12px 20px 18px;
+    gap:2px;transform:translateY(-12px);opacity:0;pointer-events:none;transition:.24s;
+    box-shadow:var(--shadow);
+  }
+  .nav-links.open{transform:none;opacity:1;pointer-events:auto}
+  .nav-links a{padding:12px 10px;font-size:16px}
+  #menuToggle{display:grid}
+  .hero{padding-top:calc(var(--nav-h) + 44px)}
+  .contact{padding:34px 20px}
+  .info-grid{grid-template-columns:1fr}
+  .modal-inner{padding:22px}
+  .modal-icon svg{width:38px;height:38px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+
+<body>
+<div id="progress"></div>
+
+<!-- ================= 导航 ================= -->
+<nav class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#top" class="brand">
+      <span class="brand-mark" id="brandMark">Y</span>
+      <span id="brandName">肖珺</span>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">关于我</a></li>
+      <li><a href="#skills">能力</a></li>
+      <li><a href="#projects">项目</a></li>
+      <li><a href="#journey">成长</a></li>
+      <li><a href="#contact">联系</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeToggle" title="切换深浅色" aria-label="切换深浅色">
+        <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+        </svg>
+      </button>
+      <button class="icon-btn" id="menuToggle" title="菜单" aria-label="菜单">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ================= Hero ================= -->
+<header class="hero" id="top">
+  <div class="grid-bg"></div>
+  <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+
+  <div class="container hero-inner">
+    <div>
+      <span class="badge"><i class="dot"></i><span id="heroBadge">上海杉达学院 · 计算机科学与技术 · 2024 级</span></span>
+      <h1>你好，我是 <span class="grad-text" id="heroName">肖珺</span></h1>
+      <div class="type-line"><span id="typeText"></span><span class="caret"></span></div>
+      <p class="lead" id="heroLead">
+        专注机器智能化方向 —— 用计算机视觉、工业数据分析与优化算法，让设备看得见、会判断、能决策。
+        不只要把模型跑通，更在意它能不能真正落到产线上。
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#projects">
+          查看我的项目
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a class="btn btn-ghost" href="#contact">联系我</a>
+      </div>
+      <div class="hero-stats" id="heroStats"></div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= 关于我 ================= -->
+<section id="about">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-tag">ABOUT ME</span>
+      <h2>关于我</h2>
+    </div>
+    <div class="about">
+      <div class="reveal">
+        <p id="aboutP1">
+          我是上海杉达学院计算机专业大二学生，2025 年 9 月入学。现阶段以 C 语言和 Python 为主要工具，
+          一边把数据结构、算法这些基本功打牢，一边往机器智能化方向摸索。
+        </p>
+        <p id="aboutP2">
+          目前实践还在积累阶段，我更看重把每个知识点真正吃透、把每段代码真正跑通，而不是堆砌项目数量。
+          接下来会继续在机器学习与数据分析上深入，争取做出能拿得出手的完整作品。
+        </p>
+        <div class="info-grid" id="infoGrid"></div>
+      </div>
+
+      <div class="reveal" id="skills">
+        <div class="skill-list" id="skillList"></div>
+        <div class="tag-cloud" id="tagCloud"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 项目 ================= -->
+<section id="projects" style="background:var(--bg-soft)">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-tag">PROJECTS</span>
+      <h2>项目作品 · 机器智能化</h2>
+      <p>记录我做过的实践方向。点击卡片可查看技术栈与当前进展。</p>
+    </div>
+    <div class="filters reveal" id="filters"></div>
+    <div class="projects" id="projectGrid"></div>
+  </div>
+</section>
+
+<!-- ================= 成长时间线 ================= -->
+<section id="journey">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-tag">JOURNEY</span>
+      <h2>学习与成长</h2>
+    </div>
+    <div class="timeline reveal" id="timeline"></div>
+  </div>
+</section>
+
+<!-- ================= 联系 ================= -->
+<section id="contact">
+  <div class="container">
+    <div class="contact reveal">
+      <h2>想聊聊技术，或者一起做点东西？</h2>
+      <p>无论是课程合作、项目组队，还是实习机会，都欢迎随时联系我。</p>
+      <div class="contact-grid" id="contactGrid"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p id="footerText">© <span id="year"></span> 肖珺 · 上海杉达学院 · 个人展示页面</p>
+  </div>
+</footer>
+
+<!-- ================= 项目详情弹窗 ================= -->
+<div class="modal" id="modal" role="dialog" aria-modal="true">
+  <div class="modal-mask" data-close></div>
+  <div class="modal-box">
+    <button class="modal-close" data-close aria-label="关闭">&times;</button>
+    <div class="modal-inner" id="modalInner"></div>
+  </div>
+</div>
+
+<button id="toTop" aria-label="回到顶部">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+</button>
+
+<script>
+/* =========================================================
+   1. 站点信息（TODO：替换成你自己的）
+   ========================================================= */
+const SITE = {
+  name: "肖珺",
+  initial: "肖",
+  school: "上海杉达学院",
+  major: "计算机科学与技术",
+  grade: "2025 级",
+  badge: "上海杉达学院 · 计算机科学与技术 · 2025 级",
+  heroLead: "专注机器智能化方向 —— 用 C 语言打底、用 Python 做数据与模型，让设备看得见、会判断、能决策。目前正处在持续积累的阶段，想把每一个想法都真正跑通。",
+  typeLines: [                   // TODO 打字机轮播文案
+    "用数据与代码，让机器学会判断。",
+    "C 语言 · Python · 机器学习。",
+    "机器智能化方向，持续进阶中。"
+  ],
+  about: [
+    "我是上海杉达学院计算机专业大二学生，2025 年 9 月入学。现阶段以 C 语言和 Python 为主要工具，一边把数据结构、算法这些基本功打牢，一边往机器智能化方向摸索。",
+    "目前实践还在积累阶段，我更看重把每个知识点真正吃透、把每段代码真正跑通，而不是堆砌项目数量。接下来会继续在机器学习与数据分析上深入，争取做出能拿得出手的完整作品。"
+  ],
+  info: [                        // TODO 基本信息
+    { k: "学校", v: "上海杉达学院" },
+    { k: "专业", v: "计算机科学与技术" },
+    { k: "年级", v: "大二（2025 级）" },
+    { k: "方向", v: "机器智能化" },
+    { k: "常用语言", v: "C 语言 · Python" },
+    { k: "当前状态", v: "学习与项目积累中" }
+  ],
+  stats: [                       // TODO 顶部数字
+    { n: "1", l: "机器学习项目" },
+    { n: "1", l: "专业学习年限" },
+    { n: "2", l: "主力编程语言" },
+    { n: "100%", l: "投入程度" }
+  ],
+  contact: [
+    { type: "mail",  k: "邮箱", v: "xiaojun20060922@126.com", href: "mailto:xiaojun20060922@126.com" },
+    { type: "phone", k: "电话", v: "156-1897-3921",           href: "tel:15618973921" },
+    { type: "pin",   k: "城市", v: "上海",                     href: null }
+  ]
+};
+
+/* =========================================================
+   2. 技能（TODO：按真实情况调整百分比）
+   ========================================================= */
+const SKILLS = [
+  { name: "C 语言",              val: 82, note: "指针 · 结构体 · 文件与内存操作" },
+  { name: "Python 编程",         val: 88, note: "NumPy / Pandas / 面向对象" },
+  { name: "数据结构与算法",       val: 78, note: "链表树图 · 排序查找 · 复杂度分析" },
+  { name: "机器学习基础",         val: 72, note: "监督/无监督 · 模型评估 · 调参" },
+  { name: "数据分析与可视化",     val: 75, note: "清洗 / 特征处理 / Matplotlib" }
+];
+const TAGS = ["C 语言","Python","NumPy","Pandas","Matplotlib","Scikit-learn","数据结构","算法设计","机器学习","数据分析","特征工程","数据可视化"];
+
+/* =========================================================
+   3. 项目
+   目前只记录"做过什么方向"，不虚构细节。
+   以后有完整项目时，往数组里加对象即可，points / results
+   填了内容，详情页会自动显示对应模块。
+   icon 可选：vision / data / algo / robot
+   ========================================================= */
+const PROJECTS = [
+  {
+    icon: "robot",
+    cat: "机器智能化",
+    title: "机器智能化方向实践",
+    period: "2026.07 - 2026.08",
+    role: "个人学习实践",
+    summary: "围绕机器智能化方向开展的实践学习：尝试把 C 语言与 Python 用在数据处理和模型训练上，走通从数据到结果的基本流程。",
+    tech: ["C 语言", "Python"],
+    pendingNote: "项目细节与量化结果正在整理中，后续会补充完整的过程记录与效果数据。",
+    points: [],
+    results: []
+  }
+];
+
+/* =========================================================
+   4. 成长时间线（TODO：替换）
+   ========================================================= */
+const TIMELINE = [
+  { date: "2025.09", title: "入学 · 打基础", text: "进入上海杉达学院计算机科学与技术专业，从 C 语言入手，同步学习数据结构与专业基础课程，建立编程基本功。" },
+  { date: "2026.07 - 2026.08", title: "第一个机器学习项目", text: "完成人生第一个机器学习项目，第一次走通「数据 → 模型 → 评估 → 优化」的完整流程，也确定了往机器智能化方向深入的想法。", now: false },
+  { date: "现在", title: "持续进阶中", text: "继续补强 Python 与机器学习基础，一边做数据分析练习，一边积累更完整的项目经验。", now: true }
+];
+
+/* =========================================================
+   以下为页面逻辑，一般无需修改
+   ========================================================= */
+const ICONS = {
+  vision: '<svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>',
+  data:   '<svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="3" x2="3" y2="21"/><line x1="3" y1="21" x2="21" y2="21"/><path d="M7 15l3.5-4.5 3 2.5L21 6"/><circle cx="10.5" cy="10.5" r="1"/><circle cx="13.5" cy="13" r="1"/></svg>',
+  algo:   '<svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2.5"/><circle cx="19" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M7 7.5l3.5 8M17 7.5L13.5 15.5M7.5 6h9"/></svg>',
+  robot:  '<svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="3"/><circle cx="9" cy="14" r="1.4"/><circle cx="15" cy="14" r="1.4"/><path d="M12 8V4M12 3.2v1.6M8 19v2M16 19v2"/></svg>',
+  mail:   '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2.5"/><polyline points="3 7 12 13 21 7"/></svg>',
+  code:   '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 4 12 9 18"/><polyline points="15 6 20 12 15 18"/></svg>',
+  phone:  '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h3l2 5-2.5 1.5a12 12 0 0 0 6 6L16 13l5 2v3a3 3 0 0 1-3 3A16 16 0 0 1 3 6a3 3 0 0 1 3-3z"/></svg>',
+  pin:    '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+  arrow:  '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'
+};
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+
+/* ---------- 渲染：基础信息 ---------- */
+document.title = `${SITE.name} · 个人主页 | 机器智能化`;
+$("#brandName").textContent = SITE.name;
+$("#brandMark").textContent = SITE.initial;
+$("#heroName").textContent = SITE.name;
+$("#heroBadge").textContent = SITE.badge;
+$("#heroLead").textContent = SITE.heroLead;
+$("#aboutP1").textContent = SITE.about[0];
+$("#aboutP2").textContent = SITE.about[1];
+$("#footerText").innerHTML = `© <span id="year"></span> ${esc(SITE.name)} · ${esc(SITE.school)} · 个人展示页面`;
+$("#year").textContent = new Date().getFullYear();
+
+$("#heroStats").innerHTML = SITE.stats
+  .map(s => `<div><div class="num">${esc(s.n)}</div><div class="lbl">${esc(s.l)}</div></div>`).join("");
+
+$("#infoGrid").innerHTML = SITE.info
+  .map(i => `<div class="info-item"><span class="k2">${esc(i.k)}</span><span class="v2">${esc(i.v)}</span></div>`).join("");
+
+/* ---------- 渲染：技能 ---------- */
+$("#skillList").innerHTML = SKILLS.map((s, i) => `
+  <div>
+    <div class="skill-top"><span class="name">${esc(s.name)}</span><span class="val">${s.val}%</span></div>
+    <div class="bar"><i data-w="${s.val}"></i></div>
+    <div style="font-size:12.5px;color:var(--text-3);margin-top:6px">${esc(s.note)}</div>
+  </div>`).join("");
+$("#tagCloud").innerHTML = TAGS.map(t => `<span class="tag">${esc(t)}</span>`).join("");
+
+/* ---------- 渲染：项目 ---------- */
+const cats = ["全部", ...Array.from(new Set(PROJECTS.map(p => p.cat)))];
+let activeCat = "全部";
+$("#filters").innerHTML = cats
+  .map((c, i) => `<button class="filter${i === 0 ? " active" : ""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("");
+
+function renderProjects() {
+  const list = PROJECTS.filter(p => activeCat === "全部" || p.cat === activeCat);
+  $("#projectGrid").innerHTML = list.map(p => {
+    const idx = PROJECTS.indexOf(p);
+    return `
+    <article class="card reveal" data-idx="${idx}">
+      <div class="card-body">
+        <span class="cat-inline">${esc(p.cat)}</span>
+        <h3>${esc(p.title)}</h3>
+        <p>${esc(p.summary)}</p>
+        <div class="chips">${p.tech.slice(0, 4).map(t => `<span class="chip">${esc(t)}</span>`).join("")}
+          ${p.tech.length > 4 ? `<span class="chip">+${p.tech.length - 4}</span>` : ""}</div>
+        <div class="card-foot">
+          <span>${esc(p.period)}</span>
+          <span class="more">查看详情 ${ICONS.arrow}</span>
+        </div>
+      </div>
+    </article>`;
+  }).join("");
+  $$("#projectGrid .card").forEach(activate);
+}
+
+$("#filters").addEventListener("click", e => {
+  const btn = e.target.closest(".filter");
+  if (!btn) return;
+  activeCat = btn.dataset.cat;
+  $$("#filters .filter").forEach(b => b.classList.toggle("active", b === btn));
+  renderProjects();
+});
+
+/* ---------- 项目弹窗 ---------- */
+const modal = $("#modal");
+function openModal(i) {
+  const p = PROJECTS[i];
+  $("#modalInner").innerHTML = `
+    <div class="modal-icon">${ICONS[p.icon] || ICONS.algo}</div>
+    <h3>${esc(p.title)}</h3>
+    <div class="modal-meta">
+      <span>${esc(p.cat)}</span><span>${esc(p.period)}</span><span>${esc(p.role)}</span>
+    </div>
+    <p style="color:var(--text-2)">${esc(p.summary)}</p>
+    <div class="modal-sec">
+      <h4>我做了什么</h4>
+      ${(p.points && p.points.length)
+        ? `<ul>${p.points.map(t => `<li>${esc(t)}</li>`).join("")}</ul>`
+        : `<p style="color:var(--text-3);font-size:14.5px">${esc(p.pendingNote || "详细内容整理中。")}</p>`}
+    </div>
+    <div class="modal-sec">
+      <h4>技术栈</h4>
+      <div class="chips">${(p.tech || []).map(t => `<span class="chip">${esc(t)}</span>`).join("")}</div>
+    </div>
+    ${(p.results && p.results.length)
+      ? `<div class="modal-sec">
+           <h4>关键结果</h4>
+           <div class="results">${p.results.map(r => `<div class="result"><b>${esc(r.v)}</b><span>${esc(r.l)}</span></div>`).join("")}</div>
+         </div>` : ""}`;
+  modal.classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closeModal() {
+  modal.classList.remove("open");
+  document.body.style.overflow = "";
+}
+$("#projectGrid").addEventListener("click", e => {
+  const card = e.target.closest(".card");
+  if (card) openModal(+card.dataset.idx);
+});
+modal.addEventListener("click", e => { if (e.target.hasAttribute("data-close")) closeModal(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+/* ---------- 渲染：时间线 ---------- */
+$("#timeline").innerHTML = TIMELINE.map(t => `
+  <div class="tl-item${t.now ? " now" : ""}">
+    <span class="tl-date">${esc(t.date)}</span>
+    <h4>${esc(t.title)}</h4>
+    <p>${esc(t.text)}</p>
+  </div>`).join("");
+
+/* ---------- 渲染：联系方式 ---------- */
+$("#contactGrid").innerHTML = SITE.contact.map(c => {
+  const inner = `<div class="ic">${ICONS[c.type] || ICONS.mail}</div>
+                 <span class="k2">${esc(c.k)}</span><span class="v2">${esc(c.v)}</span>`;
+  return c.href
+    ? `<a class="contact-item" href="${esc(c.href)}" ${c.type === "code" ? 'target="_blank" rel="noopener"' : ""}>${inner}</a>`
+    : `<div class="contact-item">${inner}</div>`;
+}).join("");
+
+/* ---------- 打字机 ---------- */
+(function typeWriter() {
+  const el = $("#typeText");
+  let li = 0, ci = 0, deleting = false;
+  function tick() {
+    const text = SITE.typeLines[li];
+    ci += deleting ? -1 : 1;
+    el.textContent = text.slice(0, ci);
+    let delay = deleting ? 45 : 95;
+    if (!deleting && ci === text.length) { delay = 1800; deleting = true; }
+    else if (deleting && ci === 0) { deleting = false; li = (li + 1) % SITE.typeLines.length; delay = 400; }
+    setTimeout(tick, delay);
+  }
+  tick();
+})();
+
+/* ---------- 技能条动画 ---------- */
+function fillBar(bar) {
+  requestAnimationFrame(() => { bar.style.width = (bar.dataset.w || 0) + "%"; });
+}
+
+/* ---------- 滚动出现（浏览器不支持时自动降级为直接显示） ---------- */
+const io = ("IntersectionObserver" in window) ? new IntersectionObserver(entries => {
+  entries.forEach(en => {
+    if (en.isIntersecting) {
+      en.target.classList.add("in");
+      $$(".bar > i", en.target).forEach(fillBar);
+      io.unobserve(en.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }) : null;
+
+function activate(el) {
+  if (!el) return;
+  if (io) { io.observe(el); return; }
+  el.classList.add("in");
+  $$(".bar > i", el).forEach(fillBar);
+}
+$$(".reveal").forEach(activate);
+
+/* ---------- 导航 / 滚动 ---------- */
+const nav = $("#nav"), toTop = $("#toTop"), bar = $("#progress");
+window.addEventListener("scroll", () => {
+  const y = window.scrollY;
+  nav.classList.toggle("scrolled", y > 12);
+  toTop.classList.toggle("show", y > 500);
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  bar.style.width = (h > 0 ? (y / h) * 100 : 0) + "%";
+});
+toTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+/* ---------- 移动端菜单 ---------- */
+const navLinks = $("#navLinks");
+$("#menuToggle").addEventListener("click", () => navLinks.classList.toggle("open"));
+navLinks.addEventListener("click", e => { if (e.target.tagName === "A") navLinks.classList.remove("open"); });
+
+/* ---------- 深浅色 ---------- */
+const SUN = '<path d="M12 4V2M12 22v-2M4 12H2M22 12h-2M5.6 5.6L4.2 4.2M19.8 19.8l-1.4-1.4M5.6 18.4l-1.4 1.4M19.8 4.2l-1.4 1.4"/><circle cx="12" cy="12" r="4"/>';
+const MOON = '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>';
+const root = document.documentElement;
+const saved = localStorage.getItem("theme");
+if (saved) root.dataset.theme = saved;
+function syncIcon() {
+  $("#themeIcon").innerHTML = root.dataset.theme === "dark" ? SUN : MOON;
+}
+syncIcon();
+$("#themeToggle").addEventListener("click", () => {
+  root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+  localStorage.setItem("theme", root.dataset.theme);
+  syncIcon();
+});
+
+/* ---------- 启动 ---------- */
+renderProjects();
+</script>
+</body>
+</html>
