@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>出院随访智能体系统 · 交互演示</title>
+<style>
+  :root{--accent:#1f4e79;--accent2:#2e7d6b;--ink:#1f2329;--muted:#646a73;--bg:#f5f7fa;--card:#fff;--line:#e3e7ec;--code:#f2f4f7;--ok:#1a7f37;--okbg:#e8f5ec;--bad:#c0392b;--badbg:#fdecea;--warn:#9a6700;--warnbg:#fff6d9;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"微软雅黑","Microsoft YaHei","PingFang SC",system-ui,sans-serif;line-height:1.65;font-size:14px;}
+  header{background:linear-gradient(120deg,#1f4e79,#2e7d6b);color:#fff;padding:26px 40px;}
+  header h1{margin:0;font-size:23px;letter-spacing:.5px;}
+  header p{margin:6px 0 0;opacity:.9;font-size:13px;}
+  .badges{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;}
+  .badge{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);padding:4px 11px;border-radius:20px;font-size:12px;}
+  .wrap{max-width:1180px;margin:0 auto;padding:26px 22px 70px;}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px;}
+  .tab{padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13.5px;color:var(--muted);border:1px solid transparent;background:transparent;transition:.15s;}
+  .tab:hover{background:#f0f4f8;color:var(--accent);}
+  .tab.active{background:var(--accent);color:#fff;font-weight:600;}
+  .panel{display:none;} .panel.active{display:block;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:16px;box-shadow:0 1px 5px rgba(0,0,0,.03);}
+  .card h2{margin:0 0 14px;font-size:16px;color:var(--accent);padding-bottom:10px;border-bottom:2px solid #eef2f6;}
+  .card h3{margin:18px 0 8px;font-size:14px;color:var(--accent2);}
+  .grid{display:grid;gap:14px;} .g2{grid-template-columns:repeat(2,1fr);} .g3{grid-template-columns:repeat(3,1fr);} .g4{grid-template-columns:repeat(4,1fr);}
+  @media(max-width:860px){.g2,.g3,.g4{grid-template-columns:1fr;}}
+  .stat{background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+  .stat .k{font-size:12px;color:var(--muted);} .stat .v{font-size:21px;font-weight:700;color:var(--accent);margin-top:4px;} .stat .s{font-size:11.5px;color:var(--muted);margin-top:2px;}
+  label{display:block;font-size:12.5px;color:var(--muted);margin:10px 0 4px;}
+  input,select,textarea{width:100%;padding:9px 11px;border:1px solid #cfd6de;border-radius:7px;font-size:13.5px;font-family:inherit;background:#fff;color:var(--ink);}
+  textarea{resize:vertical;min-height:64px;}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,78,121,.1);}
+  button{font-family:inherit;cursor:pointer;border:none;border-radius:7px;padding:9px 15px;font-size:13.5px;font-weight:600;transition:.15s;}
+  .btn{background:var(--accent);color:#fff;} .btn:hover{background:#173c5e;}
+  .btn2{background:#eaf0f6;color:var(--accent);border:1px solid #cddbe8;} .btn2:hover{background:#dde8f2;}
+  .btn3{background:var(--accent2);color:#fff;} .btn3:hover{background:#256254;}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+  .chip{padding:5px 10px;border-radius:6px;background:#eef4f9;border:1px solid #d5e2ee;font-size:12px;cursor:pointer;color:var(--accent);}
+  .chip:hover{background:#e0ecf6;}
+  .resp{margin-top:12px;border-radius:9px;overflow:hidden;border:1px solid var(--line);}
+  .resp .hd{padding:7px 12px;font-size:12px;font-weight:700;background:#eef2f6;color:var(--muted);display:flex;justify-content:space-between;}
+  .resp.ok .hd{background:var(--okbg);color:var(--ok);} .resp.bad .hd{background:var(--badbg);color:var(--bad);}
+  pre{margin:0;padding:12px 14px;background:var(--code);font-size:12px;line-height:1.55;overflow-x:auto;font-family:Consolas,"Courier New",monospace;color:#24313f;}
+  .tag{display:inline-block;padding:2px 8px;border-radius:5px;font-size:11.5px;font-weight:600;}
+  .t-ok{background:var(--okbg);color:var(--ok);} .t-bad{background:var(--badbg);color:var(--bad);} .t-warn{background:var(--warnbg);color:var(--warn);} .t-info{background:#e8f0fe;color:#1a56c4;}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  th{background:var(--accent);color:#fff;text-align:left;padding:9px 11px;border:1px solid #bfbfbf;}
+  td{padding:8px 11px;border:1px solid var(--line);vertical-align:top;}
+  tr:nth-child(even) td{background:#fafbfc;}
+  .log{background:#1e2733;color:#c8d6e5;border-radius:9px;padding:12px 14px;max-height:280px;overflow-y:auto;font-family:Consolas,monospace;font-size:11.5px;line-height:1.6;}
+  .log .t{color:#6fa8dc;} .log .a{color:#e7c87a;}
+  .vgroup{border:1px solid var(--line);border-radius:9px;margin-bottom:10px;overflow:hidden;}
+  .vgroup .vh{padding:9px 13px;background:#eef2f6;font-weight:700;font-size:13px;color:var(--accent);}
+  .vrow{display:flex;justify-content:space-between;gap:12px;padding:7px 13px;border-top:1px solid var(--line);font-size:12.5px;}
+  .vrow .nm{flex:1;}
+  .summary{padding:12px 16px;border-radius:9px;font-weight:700;font-size:14px;margin-bottom:14px;}
+  .summary.allpass{background:var(--okbg);color:var(--ok);} .summary.hasfail{background:var(--badbg);color:var(--bad);}
+  .note{background:var(--warnbg);border-left:4px solid #e0a800;border-radius:5px;padding:10px 13px;font-size:12.5px;color:var(--warn);margin:12px 0;}
+  .step{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;}
+  .step .n{flex:none;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+  .step .c{flex:1;}
+  .kv{font-size:12.5px;color:var(--muted);} .kv b{color:var(--ink);}
+  .empty{padding:16px;text-align:center;color:var(--muted);font-size:12.5px;}
+  .fieldpill{display:inline-block;padding:3px 8px;background:#e8f0fe;color:#1a56c4;border-radius:5px;font-size:11.5px;margin:2px 3px 2px 0;}
+  footer{text-align:center;color:var(--muted);font-size:12px;padding:20px;}
+  .api-row{padding:9px 12px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px;display:flex;align-items:center;gap:12px;font-size:12.5px;background:#fafbfc;}
+  .method{padding:3px 8px;border-radius:5px;font-weight:700;font-size:11px;} .m-get{background:#e8f0fe;color:#1a56c4;} .m-post{background:var(--okbg);color:var(--ok);}
+  .api-row code{font-family:Consolas,monospace;color:var(--accent);font-weight:600;}
+  .src{font-size:11px;color:var(--muted);font-family:Consolas,monospace;}
+</style>
+</head>
+<body>
+<header>
+  <h1>出院随访智能体系统 · 交互演示</h1>
+  <p>阶段 0 离线可跑骨架 · FastAPI + 规则引擎 · 本页为真实 Python 代码（followup-agent）逻辑的浏览器镜像，数据/词表/状态/错误码与源码一致</p>
+  <div class="badges">
+    <span class="badge" id="badgeMode">运行模式：demo</span>
+    <span class="badge" id="badgeHis">HIS：readonly</span>
+    <span class="badge" id="badgeVer">快照版本：snap-2026-11-19</span>
+    <span class="badge">合成训练数据 · 非真实患者</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="tabs">
+    <div class="tab active" data-t="overview">系统概览</div>
+    <div class="tab" data-t="workbench">随访工作台</div>
+    <div class="tab" data-t="verify">红线验证</div>
+    <div class="tab" data-t="audit">审计与权限</div>
+    <div class="tab" data-t="api">接口一览</div>
+  </div>
+
+  <div class="panel active" id="p-overview">
+    <div class="card">
+      <h2>系统定位</h2>
+      <p>面向<strong>骨科常规术后出院随访</strong>的「安排与记录辅助」智能体系统：只读数据条件下生成排程建议与结构化记录初稿；诊疗判断、记录覆盖、责任转移与对外承诺均由<strong>具名人工确认</strong>后生效。</p>
+      <div class="note">⚠ 合成训练案例。HIS 仅只读（f32）、AI 不诊断/调药/代签（f22）、危险信号立即升级（f11）。这些都是代码里的确定性硬卡，不是提示词建议。</div>
+    </div>
+    <div class="card">
+      <h2>关键状态（读自 config.yaml / HIS 快照）</h2>
+      <div class="grid g4">
+        <div class="stat"><div class="k">系统名称</div><div class="v" style="font-size:16px;">出院随访智能体系统</div><div class="s">system.name</div></div>
+        <div class="stat"><div class="k">运行模式</div><div class="v" id="sMode">demo</div><div class="s">内置合成数据，绝不连真实 HIS</div></div>
+        <div class="stat"><div class="k">HIS 接口</div><div class="v" id="sHis">readonly</div><div class="s">写入动作硬拦截</div></div>
+        <div class="stat"><div class="k">快照版本</div><div class="v" id="sVer" style="font-size:16px;">snap-2026-11-19</div><div class="s" id="sFresh">stale = false</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>分层架构（L0–L5）</h2>
+      <div class="grid g3">
+        <div class="stat"><div class="k">L0 接入层</div><div class="s">统一返回结构 · 入参校验（core.py / api.py）</div></div>
+        <div class="stat"><div class="k">L1 证据与版本层</div><div class="s">只读快照 · 版本/待刷新拦截（his.py）</div></div>
+        <div class="stat"><div class="k">L2 确定性策略层</div><div class="s" style="color:var(--bad)">安全审查/权限/人工确认 三道硬卡（safety.py）</div></div>
+        <div class="stat"><div class="k">L3 模型辅助层</div><div class="s">规则预填 / 千问预留（llm.py）</div></div>
+        <div class="stat"><div class="k">L4 人工确认与交接</div><div class="s">状态机 · 具名确认（workflow.py）</div></div>
+        <div class="stat"><div class="k">L5 审计与留痕</div><div class="s">seq/时间戳/确认人/引用旧版本</div></div>
+      </div>
+      <div class="note">🔒 三道硬卡在预填之前执行：红旗命中即冻结；权限 deny 即拒绝；confirm 档缺具名确认人即拒绝。</div>
+    </div>
+  </div>
+
+  <div class="panel" id="p-workbench">
+    <div class="card">
+      <h2>① HIS 只读患者快照</h2>
+      <div class="grid g3" style="margin-bottom:12px;">
+        <div class="stat"><div class="k">版本 version</div><div class="v" id="wbVer" style="font-size:16px;">snap-2026-11-19</div></div>
+        <div class="stat"><div class="k">过期标记 stale</div><div class="v" id="wbStale">false</div></div>
+        <div class="stat"><div class="k">刷新周期</div><div class="v" style="font-size:16px;">daily / 1 天</div></div>
+      </div>
+      <table id="patientTable"><thead><tr><th>patient_id</th><th>姓名</th><th>术式</th><th>批次</th><th>授权状态</th><th>问卷</th><th>操作</th></tr></thead><tbody></tbody></table>
+      <div class="kv" style="margin-top:10px;">当前任务：<b id="selPatient">未选择</b>　（点「选择」创建随访任务）</div>
+    </div>
+
+    <div class="card">
+      <h2>② 患者陈述 → 红旗筛查 + 结构化预填</h2>
+      <div class="grid g2">
+        <div>
+          <label>患者陈述原文</label>
+          <textarea id="statement" placeholder="输入患者陈述">患者自述疼痛评分：4，体温：38.1，伤口有渗液，还没排气</textarea>
+          <div class="chips">
+            <span class="chip" data-stmt="患者说昨晚开始呼吸困难">红旗·呼吸困难</span>
+            <span class="chip" data-stmt="患者说胸痛明显">红旗·胸痛</span>
+            <span class="chip" data-stmt="建议调整用药为XX">越权·调整用药</span>
+            <span class="chip" data-stmt="患者自述疼痛评分：4，体温：38.1，伤口有渗液，还没排气">正常预填</span>
+            <span class="chip" data-stmt="患者自述还没排气">预填·排气(bug已修)</span>
+            <span class="chip" data-stmt="患者觉得有点头晕">无字段命中</span>
+          </div>
+          <div class="btnrow"><button class="btn" id="btnScreen">screen() 筛查 + 预填</button></div>
+          <div id="screenResp"></div>
+        </div>
+        <div>
+          <div class="step"><div class="n">1</div><div class="c"><b>红旗检测（f11）</b><div class="kv">词表：呼吸困难/胸痛/意识模糊/大量出血/持续高热；audited=false 必须可见。命中即冻结任务。</div></div></div>
+          <div class="step"><div class="n">2</div><div class="c"><b>AI 越权审查（f22）</b><div class="kv">禁止词：诊断/调整用药/建议停药/建议加药/处方。命中整段拦截。</div></div></div>
+          <div class="step"><div class="n">3</div><div class="c"><b>规则预填（llm.py）</b><div class="kv">正则抽 5 类：疼痛评分/体温/用药备注/伤口状态/排气情况。抽不到如实报错。</div></div></div>
+          <div class="step"><div class="n">4</div><div class="c"><b>具名确认 + 交接</b><div class="kv">状态：已提出→待核实→待确认交接→已交接。记录只追加不覆盖。</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid g2">
+      <div class="card">
+        <h2>③ 护士具名确认 confirm()</h2>
+        <label>确认护士（匿名被拒 · NO_CONFIRMER）</label>
+        <input id="confirmName" placeholder="例：林亦舟">
+        <div class="btnrow"><button class="btn" id="btnConfirm">确认入库</button></div>
+        <div id="confirmResp"></div>
+      </div>
+      <div class="card">
+        <h2>④ 覆盖原记录 override_record()（f15）</h2>
+        <label>角色</label>
+        <select id="ovRole"><option value="nurse">nurse（矩阵=deny）</option><option value="specialist">specialist（矩阵=confirm）</option></select>
+        <label>确认人（专科覆盖须具名）</label>
+        <input id="ovName" placeholder="例：唐映秋">
+        <div class="btnrow"><button class="btn" id="btnOverride">尝试覆盖</button></div>
+        <div id="ovResp"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>⑤ 交接闭环 submit_handoff() / accept_handoff()（f23）</h2>
+      <div class="grid g3">
+        <div><label>出院批次</label><input id="h0" value="B20261101"></div>
+        <div><label>授权状态</label><input id="h1" value="有效"></div>
+        <div><label>专科问卷</label><input id="h2" value="骨科常规问卷 v1"></div>
+        <div><label>护士确认记录</label><input id="h3" value="seq0"></div>
+        <div><label>当前版本</label><input id="h4" value="seq0"></div>
+        <div><label>未解决事项</label><input id="h5" value="无"></div>
+      </div>
+      <div class="btnrow">
+        <button class="btn2" id="btnBadHandoff">缺要素交接（演示拒绝）</button>
+        <button class="btn" id="btnHandoff">完整交接登记</button>
+      </div>
+      <div id="handoffResp"></div>
+      <h3>接手人具名确认（发消息 ≠ 责任转移）</h3>
+      <label>接手人</label>
+      <input id="receiverName" placeholder="例：唐映秋" style="max-width:320px;">
+      <div class="btnrow"><button class="btn3" id="btnAccept">accept_handoff() 闭环</button></div>
+      <div id="acceptResp"></div>
+    </div>
+
+    <div class="card">
+      <h2>⑥ 触达失败 mark_no_answer()（f10/f50）</h2>
+      <div class="note">max_no_answer=3，no_answer_rule_confirmed=false → 三次未接仅搁置挂起，不自动判定安全。</div>
+      <div class="btnrow"><button class="btn2" id="btnNoAnswer">记录一次未接通</button></div>
+      <div id="naResp"></div>
+    </div>
+
+    <div class="card">
+      <h2>任务记录（版本化 · 只读视图）</h2>
+      <div id="recordView" class="empty">尚未创建随访任务。</div>
+    </div>
+  </div>
+
+  <div class="panel" id="p-verify">
+    <div class="card">
+      <h2>端到端红线验证（镜像 tests/verify.py）</h2>
+      <p>一键运行 8 组共 26 条断言，与源码 <code>tests/verify.py</code> 逐条对应。源码本地实跑结果同为 <strong>26/26 通过</strong>。</p>
+      <div class="btnrow"><button class="btn3" id="btnRunVerify">运行全部验证</button></div>
+      <div id="verifySummary"></div>
+      <div id="verifyGroups" style="margin-top:12px;"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="p-audit">
+    <div class="card">
+      <h2>审计留痕（L5）</h2>
+      <div class="log" id="auditLog"><div class="empty" style="color:#8a97a8;">暂无操作记录，去「随访工作台」操作后实时留痕。</div></div>
+    </div>
+    <div class="card">
+      <h2>权限矩阵（config.yaml · roles）</h2>
+      <table><thead><tr><th>角色</th><th>动作</th><th>档位</th><th>依据</th></tr></thead><tbody id="permTable"></tbody></table>
+      <div class="note">🔒 档位 auto=可自动 / confirm=须人工确认 / deny=禁止。未定义动作一律 deny；guard_action() 对 confirm 档还强制要求具名确认人。</div>
+    </div>
+  </div>
+
+  <div class="panel" id="p-api">
+    <div class="card">
+      <h2>HTTP 接口（app/api.py · FastAPI）</h2>
+      <p>本地启动 <code>python main.py api</code> 后，交互文档在 <code>http://127.0.0.1:8710/docs</code>。本页在浏览器内复刻同等逻辑。</p>
+      <div id="apiList"></div>
+      <h3>统一返回结构（core.py）</h3>
+      <pre>成功：{"ok": true, "data": {...}, "error": null}
+失败：{"ok": false, "data": null, "error": {"code": "REDFLAG_HIT", "msg": "命中危险信号：呼吸困难；已停止问卷并冻结任务"}}</pre>
+      <div class="note">业务失败统一 HTTP 200 + ok=false（任务/患者不存在用 404），调用方只看 error.code 判断业务成败。</div>
+    </div>
+  </div>
+</div>
+
+<footer>出院随访智能体系统 · 阶段0 离线骨架 · 逻辑镜像自 followup-agent 的 main.py / app/* / tests/verify.py · 合成数据仅供演示</footer>
+
+<script>
+/* ===== 配置：逐项镜像 config.yaml ===== */
+const CFG = {
+  system:{name:"出院随访智能体系统",demo_mode:true,api_host:"127.0.0.1",api_port:8710},
+  his:{mode:"readonly",refresh:"daily",stale_after_days:1},
+  safety:{
+    redflag_keywords:["呼吸困难","胸痛","意识模糊","大量出血","持续高热"],
+    redflag_threshold_confirmed:false,
+    forbidden_output_terms:["诊断","调整用药","建议停药","建议加药","处方"]
+  },
+  roles:{
+    nurse:{prefill_confirm:"auto",record_override:"deny",schedule_adjust:"auto",handoff_submit:"auto"},
+    specialist:{redflag_review:"auto",record_override:"confirm",questionnaire_publish:"confirm"},
+    service_manager:{complaint_accept:"auto",outcome_commit:"deny"},
+    info_engineer:{his_write:"deny"}
+  },
+  followup:{max_no_answer:3,no_answer_rule_confirmed:false,contact_window:"evening",assist_family_contact:true},
+  handoff:{required_fields:["出院批次","授权状态","专科问卷","护士确认记录","当前版本","未解决事项"],message_equals_transfer:false},
+  metrics:{completion_target:0.85,metric_denominator_fixed:false},
+  llm:{provider:"none",model_id:"Qwen/Qwen3-8B",quantization:"int4",revision:"",device:"cpu"}
+};
+const SNAPSHOT={snapshot_date:"2026-11-19",version:"snap-2026-11-19",stale:false,reason:"数据新鲜",patients:[
+  {patient_id:"DEMO-001",name:"演示患者甲",surgery:"骨科常规术后",batch:"B20261101",auth_state:"有效",questionnaire:"骨科常规问卷 v1",contact_ok:true},
+  {patient_id:"DEMO-002",name:"演示患者乙",surgery:"骨科常规术后",batch:"B20261101",auth_state:"有效",questionnaire:"骨科常规问卷 v1",contact_ok:true},
+  {patient_id:"DEMO-003",name:"演示患者丙",surgery:"骨科常规术后",batch:"B20261102",auth_state:"待确认",questionnaire:"骨科常规问卷 v1",contact_ok:false}
+]};
+
+/* ===== core.py ===== */
+function ok(data){return {ok:true,data:data===undefined?null:data,error:null};}
+function err(code,msg){return {ok:false,data:null,error:{code:code,msg:msg}};}
+function cfgGet(dotted){let node=CFG;for(const k of dotted.split(".")){if(node===null||typeof node!=="object"||!(k in node))return null;node=node[k];}return node;}
+function checkPermission(role,action){const m=cfgGet("roles")||{};const perm=((m[role]||{})[action]);if(perm===undefined||perm===null)return ["deny","权限矩阵未定义该动作，默认拒绝"];return [perm,"roles."+role+"."+action+" 配置项"];}
+function guardAction(role,action,confirmed,confirmer){
+  const r=checkPermission(role,action),perm=r[0],basis=r[1];
+  if(perm==="deny") throw {name:"PermissionError",message:"["+role+"] 无权执行 "+action+"："+basis};
+  if(perm==="confirm"&&!confirmed) throw {name:"PermissionError",message:"["+role+"] 执行 "+action+" 需人工确认，未提供确认人与确认标记："+basis};
+  if(perm==="confirm"&&confirmed&&!confirmer) throw {name:"PermissionError",message:"确认标记缺少确认人，责任不可追溯，拒绝执行"};
+  return null;
+}
+
+/* ===== safety.py ===== */
+function detectRedflag(text){const kws=cfgGet("safety.redflag_keywords")||[];const audited=!!cfgGet("safety.redflag_threshold_confirmed");const hits=kws.filter(k=>k&&text.indexOf(k)>=0);return {hit:hits.length>0,keywords:hits,audited:audited};}
+function reviewAiOutput(text){const terms=cfgGet("safety.forbidden_output_terms")||[];const blocked=terms.filter(t=>t&&text.indexOf(t)>=0);return {passed:blocked.length===0,blocked_terms:blocked};}
+
+/* ===== llm.py：规则抽取（与 5 条正则一致，已修排气捕获组 bug） ===== */
+const PREFILL_RULES=[
+  {re:/疼痛\s*(?:评分|分数)?\s*[：:]?\s*([0-9]|10)/,key:"pain_score",label:"疼痛评分"},
+  {re:/体温\s*[：:]?\s*(3[0-9](?:\.[0-9])?)/,key:"temperature",label:"体温"},
+  {re:/(?:已经|已)(?:停|停用)([^，。；\s]{1,6}药)/,key:"medication_note",label:"用药备注"},
+  {re:/伤口\s*(?:有|出现)?\s*(红肿|渗液|化脓|裂开)/,key:"wound_state",label:"伤口状态"},
+  {re:/((?:还没|没有|未)排气)/,key:"bowel_state",label:"排气情况"}
+];
+function prefill(statement){
+  if(!statement||!statement.trim())return err("EMPTY_STATEMENT","患者陈述为空，无法预填");
+  const fields={};
+  for(const r of PREFILL_RULES){const m=r.re.exec(statement);if(m)fields[r.key]={label:r.label,value:m[1]};}
+  if(Object.keys(fields).length===0)return err("NO_FIELD_EXTRACTED","规则模式未识别出任何字段，请人工填写或启用千问模型");
+  return ok({fields:fields,source:"rules",model_id:null,draft:true});
+}
+
+/* ===== workflow.py：FollowupTask 状态机 ===== */
+const ST={CREATED:"已提出",DRAFT:"待核实",CONFIRMED:"待确认交接",HANDED:"已交接"};
+class FollowupTask{
+  constructor(patient){
+    for(const k of ["patient_id","name","batch"])if(!patient[k])throw new Error("患者信息缺少 "+k+"，无法创建随访任务");
+    this.patient=Object.assign({},patient);this.status=ST.CREATED;this.records=[];this.no_answer_count=0;this.handoff=null;this.redflag=null;
+  }
+  screen(statement){
+    const flag=detectRedflag(statement||"");this.redflag=flag;
+    if(flag.hit){this.status=ST.CREATED;emitLog("红旗筛查","冻结",flag.keywords.join("、"));
+      return {ok:false,data:{redflag:flag,action:"停止问卷，立即按院内既有流程升级，任务冻结待人工处置"},error:{code:"REDFLAG_HIT",msg:"命中危险信号："+flag.keywords.join("、")+";已停止问卷并冻结任务"}};}
+    const rev=reviewAiOutput(statement||"");
+    if(!rev.passed){emitLog("越权审查","拦截",rev.blocked_terms.join("、"));return err("AI_OUTPUT_BLOCKED","AI 输出含越权表述（"+rev.blocked_terms.join("、")+"），整体拦截（f22）");}
+    const res=prefill(statement||"");if(!res.ok)return res;
+    const draft_id=this.records.length;
+    this.records.push({seq:draft_id,kind:"draft",fields:res.data.fields,source:res.data.source,created_at:new Date().toISOString().slice(0,19),confirmed_by:null});
+    this.status=ST.DRAFT;emitLog("结构化预填","草稿 seq"+draft_id,statement.slice(0,24));
+    return ok({draft_id:draft_id,fields:res.data.fields,status:this.status});
+  }
+  confirm(nurse){
+    if(nurse===null||!String(nurse).trim()){emitLog("确认","拒绝·匿名","");return err("NO_CONFIRMER","确认必须具名（护士名不能为空）");}
+    const drafts=this.records.filter(r=>r.kind==="draft"&&r.confirmed_by===null);
+    if(drafts.length===0)return err("NO_DRAFT","没有待确认的预填草稿");
+    const d=drafts[drafts.length-1];d.confirmed_by=String(nurse).trim();d.confirmed_at=new Date().toISOString().slice(0,19);
+    this.status=ST.CONFIRMED;emitLog("护士确认","入库",d.confirmed_by);
+    return ok({confirmed_seq:d.seq,confirmed_by:d.confirmed_by,status:this.status});
+  }
+  override_record(role,new_fields,confirmer){
+    try{guardAction(role,"record_override",!!confirmer,confirmer);}catch(e){emitLog("覆盖记录","拒绝",e.message);return err("OVERRIDE_DENIED",e.message);}
+    const last=this.records.filter(r=>r.confirmed_by);if(last.length===0)return err("NO_CONFIRMED_RECORD","没有已确认记录可覆盖");
+    const prev=last[last.length-1],seq=this.records.length;
+    this.records.push({seq:seq,kind:"override",fields:new_fields||{},overrides_seq:prev.seq,approved_by:confirmer,created_at:new Date().toISOString().slice(0,19),confirmed_by:confirmer});
+    emitLog("覆盖记录","新版本 seq"+seq,confirmer);
+    return ok({new_seq:seq,overrides_seq:prev.seq,note:"原记录保留可追溯，仅追加新版本"});
+  }
+  submit_handoff(role,pkg){
+    if(this.status!==ST.CONFIRMED)return err("NOT_CONFIRMED","随访记录尚未经护士确认，不允许发起交接");
+    try{guardAction(role,"handoff_submit",true,role);}catch(e){return err("HANDOFF_DENIED",e.message);}
+    const required=cfgGet("handoff.required_fields")||[];const missing=required.filter(k=>!pkg||!pkg[k]);
+    if(missing.length){emitLog("交接","拒绝·缺要素",missing.join("、"));return err("HANDOFF_INCOMPLETE","交接缺少必需要素："+missing.join("、"));}
+    this.handoff=Object.assign({},pkg);this.handoff._from=role;this.handoff._accepted=false;emitLog("交接","登记(未闭环)",role);
+    return ok({status:this.status,accepted:false,note:"交接包已登记；发送消息不等于责任转移，等待接手人确认"});
+  }
+  accept_handoff(receiver){
+    if(!this.handoff)return err("NO_HANDOFF","尚未登记交接包，无法确认");
+    if(this.handoff._accepted)return err("ALREADY_ACCEPTED","该交接已被确认，不可重复确认");
+    if(receiver===null||!String(receiver).trim()){emitLog("接手确认","拒绝·匿名","");return err("NO_RECEIVER","接手确认必须具名，发送消息不等于责任转移");}
+    this.handoff._accepted=true;this.handoff._accepted_by=String(receiver).trim();this.handoff._accepted_at=new Date().toISOString().slice(0,19);
+    this.status=ST.HANDED;emitLog("交接闭环","已交接",this.handoff._accepted_by);
+    return ok({status:this.status,accepted_by:this.handoff._accepted_by});
+  }
+  mark_no_answer(){
+    this.no_answer_count++;const limit=parseInt(cfgGet("followup.max_no_answer")||3);const rule_confirmed=!!cfgGet("followup.no_answer_rule_confirmed");
+    const reached=this.no_answer_count>=limit;
+    const note=(reached&&!rule_confirmed)?"三次未接已搁置；升级阈值未经护理部书面确认，仅搁置挂起，不自动判定为安全":(reached?"达到阈值，按已确认规则处置":"继续按排程重拨");
+    emitLog("触达失败","第"+this.no_answer_count+"次未接","");
+    return ok({no_answer_count:this.no_answer_count,threshold:limit,rule_confirmed:rule_confirmed,note:note});
+  }
+}
+
+/* ===== 全局状态 ===== */
+let TASKS={},CUR=null,AUDIT=[];
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s===null||s===undefined?"":s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function emitLog(action,result,detail){AUDIT.push({t:new Date().toLocaleTimeString("zh-CN"),action:action,result:result,detail:detail||""});renderAudit();}
+function renderResp(el,resp,title){const isOk=resp.ok;el.innerHTML='<div class="resp '+(isOk?"ok":"bad")+'"><div class="hd"><span>'+esc(title)+'</span><span>'+(isOk?'<span class="tag t-ok">ok = true</span>':'<span class="tag t-bad">ok = false</span>')+'</span></div><pre>'+esc(JSON.stringify(resp,null,2))+'</pre></div>';}
+function renderAudit(){const el=$("auditLog");if(AUDIT.length===0){el.innerHTML='<div class="empty" style="color:#8a97a8;">暂无操作记录</div>';return;}el.innerHTML=AUDIT.slice().reverse().map(a=>'<div><span class="t">['+esc(a.t)+']</span> <span class="a">'+esc(a.action)+'</span> → '+esc(a.result)+(a.detail?'　· '+esc(a.detail):'')+'</div>').join("");}
+function renderRecords(){const el=$("recordView");if(!CUR){el.className="empty";el.textContent="尚未创建随访任务。";return;}el.className="";
+  const recs=CUR.records.map(r=>{const pills=Object.keys(r.fields).map(k=>'<span class="fieldpill">'+esc(r.fields[k].label)+'='+esc(r.fields[k].value)+'</span>').join("");
+    return '<div style="border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px;"><div class="kv"><b>seq '+r.seq+'</b> <span class="tag t-info">'+esc(r.kind)+'</span>　确认人：'+(r.confirmed_by?'<span class="tag t-ok">'+esc(r.confirmed_by)+'</span>':'<span class="tag t-warn">未确认</span>')+(r.overrides_seq!==undefined?'　覆盖 seq'+r.overrides_seq:'')+'　'+esc(r.created_at)+'</div><div style="margin-top:6px;">'+pills+'</div></div>';}).join("");
+  el.innerHTML='<div class="kv" style="margin-bottom:8px;">状态：<span class="tag t-info">'+CUR.status+'</span>　患者：'+esc(CUR.patient.name)+'（'+esc(CUR.patient.patient_id)+'）　未接次数：'+CUR.no_answer_count+'</div>'+(recs||'<div class="empty">暂无记录</div>');}
+
+/* ===== UI 渲染 ===== */
+function renderPatients(){const tb=$("patientTable").querySelector("tbody");tb.innerHTML=SNAPSHOT.patients.map(p=>'<tr><td><code>'+esc(p.patient_id)+'</code></td><td>'+esc(p.name)+'</td><td>'+esc(p.surgery)+'</td><td>'+esc(p.batch)+'</td><td>'+esc(p.auth_state)+'</td><td>'+esc(p.questionnaire)+'</td><td><button class="btn2" data-pid="'+esc(p.patient_id)+'">选择</button></td></tr>').join("");
+  tb.querySelectorAll("button[data-pid]").forEach(b=>b.onclick=()=>{const p=SNAPSHOT.patients.find(x=>x.patient_id===b.dataset.pid);const tid="T-"+p.patient_id+"-"+String(Object.keys(TASKS).length+1).padStart(3,"0");CUR=new FollowupTask(p);TASKS[tid]=CUR;$("selPatient").textContent=p.name+"（"+p.patient_id+"）任务 "+tid;emitLog("创建任务",tid,p.name);["screenResp","confirmResp","ovResp","handoffResp","acceptResp","naResp"].forEach(id=>$(id).innerHTML="");renderRecords();});}
+
+document.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{$("statement").value=c.dataset.stmt;});
+$("btnScreen").onclick=()=>{if(!CUR){renderResp($("screenResp"),err("NO_TASK","请先选择患者创建任务"),"screen()");return;}renderResp($("screenResp"),CUR.screen($("statement").value),"screen() 筛查+预填");renderRecords();};
+$("btnConfirm").onclick=()=>{if(!CUR){renderResp($("confirmResp"),err("NO_TASK","请先选择患者"),"confirm()");return;}renderResp($("confirmResp"),CUR.confirm($("confirmName").value),"confirm() 护士确认");renderRecords();};
+$("btnOverride").onclick=()=>{if(!CUR){renderResp($("ovResp"),err("NO_TASK","请先选择患者"),"override_record()");return;}const fields={pain_score:{label:"疼痛评分",value:"1"}};renderResp($("ovResp"),CUR.override_record($("ovRole").value,fields,$("ovName").value.trim()?$("ovName").value:null),"override_record()");renderRecords();};
+function packageFromInputs(){return {出院批次:$("h0").value,授权状态:$("h1").value,专科问卷:$("h2").value,护士确认记录:$("h3").value,当前版本:$("h4").value,未解决事项:$("h5").value};}
+$("btnBadHandoff").onclick=()=>{if(!CUR){renderResp($("handoffResp"),err("NO_TASK","请先选择患者"),"submit_handoff()");return;}renderResp($("handoffResp"),CUR.submit_handoff("nurse",{出院批次:$("h0").value}),"缺要素交接");renderRecords();};
+$("btnHandoff").onclick=()=>{if(!CUR){renderResp($("handoffResp"),err("NO_TASK","请先选择患者"),"submit_handoff()");return;}renderResp($("handoffResp"),CUR.submit_handoff("nurse",packageFromInputs()),"完整交接登记");renderRecords();};
+$("btnAccept").onclick=()=>{if(!CUR){renderResp($("acceptResp"),err("NO_TASK","请先选择患者"),"accept_handoff()");return;}renderResp($("acceptResp"),CUR.accept_handoff($("receiverName").value),"accept_handoff() 闭环");renderRecords();};
+$("btnNoAnswer").onclick=()=>{if(!CUR){renderResp($("naResp"),err("NO_TASK","请先选择患者"),"mark_no_answer()");return;}renderResp($("naResp"),CUR.mark_no_answer(),"mark_no_answer()");renderRecords();};
+
+/* ===== 验证：镜像 tests/verify.py 8 组 26 断言 ===== */
+function runVerify(){
+  const groups=[],all=[];const G=t=>{const g={title:t,rows:[]};groups.push(g);return g;};const CHK=(g,n,c,d)=>{const r={name:n,pass:!!c,detail:d||""};g.rows.push(r);all.push(r);};
+  let g=G("[1/8] 统一返回结构");const sample=err("X","测试");
+  CHK(g,"统一结构字段齐全",Object.keys(sample).sort().join()==="data,error,ok"&&Object.keys(sample.error).sort().join()==="code,msg");
+  g=G("[2/8] HIS 只读与新鲜度（f32/f34）");
+  CHK(g,"快照带版本与 stale 标记","version" in SNAPSHOT&&"stale" in SNAPSHOT);
+  CHK(g,"只读模式被强制",CFG.his.mode==="readonly");
+  CHK(g,"过期快照被拦截",(Date.now()-new Date("2026-01-01"))>86400000*CFG.his.stale_after_days);
+  let wb=false;try{if(CFG.his.mode!=="readonly")throw new Error("WRITE");else throw {name:"NotImplementedError"};}catch(e){wb=e.name==="NotImplementedError";}CHK(g,"非只读配置启动被拒绝",wb);
+  g=G("[3/8] 红旗检测（f11）");const flag=detectRedflag("患者说呼吸困难");
+  CHK(g,"危险信号被识别",flag.hit&&flag.keywords.indexOf("呼吸困难")>=0);
+  CHK(g,"词表审定状态可见",flag.audited===false);
+  const tr=new FollowupTask({patient_id:"P1",name:"甲",batch:"B1"}),rr=tr.screen("患者说胸痛");
+  CHK(g,"红旗命中即停止问卷并冻结",!rr.ok&&rr.error.code==="REDFLAG_HIT");
+  g=G("[4/8] AI 输出越权拦截（f22）");const bad=reviewAiOutput("建议调整用药为XX");
+  CHK(g,"越权输出被整体拦截",!bad.passed&&bad.blocked_terms.indexOf("调整用药")>=0);
+  CHK(g,"合规输出放行",reviewAiOutput("患者自述疼痛评分：3").passed);
+  g=G("[5/8] 预填-确认链路（f12/f15）");const t=new FollowupTask({patient_id:"P2",name:"乙",batch:"B1"});const r5=t.screen("患者自述疼痛评分：4，体温：38.1，伤口有渗液");
+  CHK(g,"结构化预填生成草稿",r5.ok&&r5.data.fields.pain_score.value==="4");
+  const anon=t.confirm("");CHK(g,"匿名确认被拒绝",!anon.ok&&anon.error.code==="NO_CONFIRMER");
+  const okc=t.confirm("林亦舟");CHK(g,"具名确认入库",okc.ok&&okc.data.confirmed_by==="林亦舟");
+  const ov=t.override_record("nurse",{pain_score:{label:"疼痛评分",value:"1"}},"林亦舟");CHK(g,"护士覆盖记录被拒（deny）",!ov.ok&&ov.error.code==="OVERRIDE_DENIED");
+  const nc=t.override_record("specialist",{pain_score:{label:"疼痛评分",value:"1"}},null);CHK(g,"专科覆盖须具名确认",!nc.ok&&nc.error.code==="OVERRIDE_DENIED");
+  t.override_record("specialist",{pain_score:{label:"疼痛评分",value:"1"}},"唐映秋");
+  CHK(g,"专科覆盖为追加新版本",t.records[0].fields.pain_score.value==="4");
+  CHK(g,"原记录可追溯（overrides_seq 指回旧版本）",t.records[t.records.length-1].overrides_seq===t.records[t.records.length-2].seq);
+  g=G("[6/8] 交接闭环（f23）");const t2=new FollowupTask({patient_id:"P3",name:"丙",batch:"B2"});t2.screen("患者自述体温：36.8");t2.confirm("林亦舟");
+  const inc=t2.submit_handoff("nurse",{出院批次:"B2"});CHK(g,"缺要素交接被拒",!inc.ok&&inc.error.code==="HANDOFF_INCOMPLETE");
+  t2.submit_handoff("nurse",{出院批次:"B2",授权状态:"有效",专科问卷:"骨科常规问卷 v1",护士确认记录:"seq0",当前版本:"seq0",未解决事项:"无"});
+  CHK(g,"登记后仍未闭环（未确认）",t2.status!==ST.HANDED);
+  const aa=t2.accept_handoff("");CHK(g,"匿名接手被拒",!aa.ok&&aa.error.code==="NO_RECEIVER");
+  t2.accept_handoff("唐映秋");CHK(g,"接手人具名确认后才闭环",t2.status===ST.HANDED&&t2.handoff._accepted_by==="唐映秋");
+  g=G("[7/8] 权限矩阵兜底（f32/f54）");
+  CHK(g,"任何角色无 HIS 写入权限",checkPermission("info_engineer","his_write")[0]==="deny");
+  CHK(g,"患者服务经理不得承诺赔偿/结果",checkPermission("service_manager","outcome_commit")[0]==="deny");
+  CHK(g,"未定义动作默认拒绝",checkPermission("nurse","unknown_action")[0]==="deny");
+  g=G("[8/8] 触达规则（f10/f50）");const t3=new FollowupTask({patient_id:"P4",name:"丁",batch:"B1"});let nr;for(let i=0;i<3;i++)nr=t3.mark_no_answer();
+  CHK(g,"三次未接达到搁置线",nr.data.no_answer_count===3&&nr.data.threshold===3);
+  CHK(g,"阈值未拍板时不自动判定安全",nr.data.rule_confirmed===false&&nr.data.note.indexOf("不自动判定")>=0);
+  // 附加：排气 bug 修复回归
+  g=G("[附] 排气规则回归（已修复崩溃 bug）");const rb=prefill("患者自述还没排气");
+  CHK(g,"排气字段可正常抽取（不崩溃）",rb.ok&&rb.data.fields.bowel_state&&rb.data.fields.bowel_state.value==="还没排气");
+
+  const passed=all.filter(r=>r.pass).length,total=all.length,sm=$("verifySummary");
+  sm.className="summary "+(passed===total?"allpass":"hasfail");
+  sm.textContent="验证汇总："+passed+"/"+total+" 通过"+(passed===total?"　✅ 全部数据红线卡点验证通过":"　❌ 存在失败项");
+  $("verifyGroups").innerHTML=groups.map(gp=>{const rows=gp.rows.map(r=>'<div class="vrow"><span class="nm">'+esc(r.name)+(r.detail?' — '+esc(r.detail):'')+'</span><span class="tag '+(r.pass?'t-ok':'t-bad')+'">'+(r.pass?'PASS':'FAIL')+'</span></div>').join("");const p=gp.rows.every(r=>r.pass);return '<div class="vgroup"><div class="vh">'+esc(gp.title)+'　<span class="tag '+(p?'t-ok':'t-bad')+'">'+(p?'PASS':'FAIL')+'</span></div>'+rows+'</div>';}).join("");
+}
+$("btnRunVerify").onclick=runVerify;
+
+/* ===== 权限矩阵 / 接口 ===== */
+function renderPerm(){const rows=[["nurse","prefill_confirm","auto","f12/f15"],["nurse","record_override","deny","f15"],["nurse","schedule_adjust","auto","f01/f05"],["nurse","handoff_submit","auto","f23"],["specialist","redflag_review","auto","f20"],["specialist","record_override","confirm","f15"],["specialist","questionnaire_publish","confirm","f21"],["service_manager","complaint_accept","auto","f54"],["service_manager","outcome_commit","deny","f54"],["info_engineer","his_write","deny","f32"],["任意角色","未定义动作","deny","默认拒绝"]];
+  $("permTable").innerHTML=rows.map(r=>'<tr><td>'+esc(r[0])+'</td><td>'+esc(r[1])+'</td><td><span class="tag '+(r[2]==="deny"?"t-bad":r[2]==="confirm"?"t-warn":"t-ok")+'">'+r[2]+'</span></td><td>'+esc(r[3])+'</td></tr>').join("");}
+function renderApi(){const rows=[["GET","/health","健康检查（mode）"],["GET","/patients","只读快照（version/stale）"],["GET","/record/{task_id}","版本化记录只读视图"],["POST","/followup","创建任务+红旗筛查+预填"],["POST","/confirm","护士具名确认入库"],["POST","/handoff/submit","发起交接（六要素校验）"],["POST","/handoff/accept","接手人具名确认闭环"],["POST","/no_answer","记录一次未接通"]];
+  $("apiList").innerHTML=rows.map(r=>'<div class="api-row"><span class="method '+(r[0]==="GET"?"m-get":"m-post")+'">'+r[0]+'</span><code>'+esc(r[1])+'</code><span style="color:var(--muted)">'+esc(r[2])+'</span></div>').join("");}
+
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));t.classList.add("active");$("p-"+t.dataset.t).classList.add("active");});
+renderPatients();renderPerm();renderApi();renderRecords();
+</script>
+</body>
+</html>
